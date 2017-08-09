@@ -41,5 +41,9 @@
 		<string>UIInterfaceOrientationLandscapeLeft</string>
 		<string>UIInterfaceOrientationLandscapeRight</string>
 	</array>
+	<key>NSCameraUsageDescription</key>
+	<string>We&apos;ll need permission to use your camera to create a meme</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>We&apos;ll need permission to access your photos so you can select one to create a meme</string>
 </dict>
 </plist>
