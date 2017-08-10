@@ -196,7 +196,7 @@
         <scene sceneID="36q-Ur-O91">
             <objects>
                 <collectionViewController id="QPb-sa-3i4" customClass="MemeCollectionViewController" customModule="MemeMe" customModuleProvider="target" sceneMemberID="viewController">
-                    <collectionView key="view" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" misplaced="YES" dataMode="prototypes" id="OSM-TY-LJY">
+                    <collectionView key="view" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" dataMode="prototypes" id="OSM-TY-LJY">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
@@ -227,6 +227,7 @@
                                 </constraints>
                                 <connections>
                                     <outlet property="imageView" destination="9vx-Al-Baw" id="chj-mX-K1m"/>
+                                    <segue destination="242-Nb-ahy" kind="show" id="XHw-ca-P6Q"/>
                                 </connections>
                             </collectionViewCell>
                         </cells>
@@ -287,5 +288,6 @@
     </scenes>
     <inferredMetricsTieBreakers>
         <segue reference="9iw-P3-bYh"/>
+        <segue reference="XHw-ca-P6Q"/>
     </inferredMetricsTieBreakers>
 </document>
