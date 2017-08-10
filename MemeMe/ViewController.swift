@@ -18,7 +18,7 @@ extension UIImagePickerController {
     }
 }
 
-class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavigationControllerDelegate, UITextFieldDelegate {
+class ViewController: UIViewController {
     
     @IBOutlet weak var imageView: UIImageView!
     @IBOutlet weak var shareButton: UIBarButtonItem!
@@ -41,23 +41,9 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
         dismissRecogniser.cancelsTouchesInView = false
         view.addGestureRecognizer(dismissRecogniser)
 
-        
-        let style = NSMutableParagraphStyle()
-        style.alignment = .center
-        
-        
-        let memeTextAttributes:[String:Any] = [
-            NSParagraphStyleAttributeName: style,
-            NSForegroundColorAttributeName: UIColor.white,
-            NSStrokeColorAttributeName: UIColor.black,
-            NSFontAttributeName: UIFont(name: "HelveticaNeue-CondensedBlack", size: 40)!,
-            NSStrokeWidthAttributeName: -4]
-        
-        self.topTextField.defaultTextAttributes = memeTextAttributes
-        self.bottomTextField.defaultTextAttributes = memeTextAttributes
-        
-        
-        
+        setup(textField:self.topTextField, text:"TOP")
+        setup(textField:self.bottomTextField, text:"BOTTOM")
+
         self.configureUI()
 
     }
@@ -77,7 +63,27 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
     }
     
     //MARK: UI
-    
+
+    func setToolbars(hidden:Bool) {
+        self.topToolbar.isHidden = hidden
+        self.bottomToolbar.isHidden = hidden
+    }
+
+    func setup(textField: UITextField, text: String) {
+        let style = NSMutableParagraphStyle()
+        style.alignment = .center
+
+        let memeTextAttributes:[String:Any] = [
+            NSParagraphStyleAttributeName: style,
+            NSForegroundColorAttributeName: UIColor.white,
+            NSStrokeColorAttributeName: UIColor.black,
+            NSFontAttributeName: UIFont(name: "HelveticaNeue-CondensedBlack", size: 40)!,
+            NSStrokeWidthAttributeName: -4]
+
+        textField.defaultTextAttributes = memeTextAttributes
+        textField.text = text
+
+    }
     
     func cancelButtonEnabled() -> Bool {
         return (imageView.image != nil)
@@ -113,42 +119,23 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
     }
     
     @IBAction func openCamera(_ sender: Any) {
-        let imagePickerVC = UIImagePickerController()
-        imagePickerVC.sourceType = .camera
-        imagePickerVC.delegate = self
-        self.present(imagePickerVC, animated: true, completion: nil)
+        showImagePicker(sourceType: .camera)
     }
     
     @IBAction func openAlbum(_ sender: Any) {
+        showImagePicker(sourceType: .photoLibrary)
+    }
+
+    //MARK: UIImagePickerControllerPresentation
+
+    func showImagePicker(sourceType: UIImagePickerControllerSourceType) {
         let imagePickerVC = UIImagePickerController()
-        imagePickerVC.sourceType = .photoLibrary
+        imagePickerVC.sourceType = sourceType
         imagePickerVC.delegate = self
-        
         self.present(imagePickerVC, animated: true, completion: nil)
     }
-    
-    
-    //MARK: UIImagePickerControllerDelegate
-    
-    func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [String : Any]) {
-        let image = info[UIImagePickerControllerOriginalImage] as? UIImage
-        self.selectedImage = image
-        self.configureUI()
-        self.dismiss(animated: true, completion: nil)
-    }
-    
-    //MARK: UITextFieldDelegate
-    
-    func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
-        self.configureUI()
-        return true
-    }
-    
-    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
-        textField.resignFirstResponder()
-        return true
-    }
-    
+
+
     //MARK: UIKeyboard Handling
     
     func subscribeToKeyboardNotifications() {
@@ -184,24 +171,70 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
     //MARK: Meme Generation
     
     func generateMeme() -> UIImage {
-        self.topToolbar.isHidden = true
-        self.bottomToolbar.isHidden = true
+        setToolbars(hidden: true)
+        let image = drawViewInImage()
+        setToolbars(hidden: false)
+
+        return image
+        
+    }
+
+    func drawViewInImage() -> UIImage {
         UIGraphicsBeginImageContext(self.view.frame.size)
         view.drawHierarchy(in: self.view.frame, afterScreenUpdates: true)
         let image = UIGraphicsGetImageFromCurrentImageContext()!
         UIGraphicsEndImageContext()
-        self.topToolbar.isHidden = false
-        self.bottomToolbar.isHidden = false
-        
         return image
-        
-    }
-    
-    func save(memedImage: UIImage) {
-        let meme = Meme(topText: topTextField.text!, bottomText: bottomTextField.text!, originalImage: selectedImage!, memedImage: memedImage)
-        self.memes.append(meme)
     }
 
+
+    //MARK: Meme Saving
+
+    func save(memedImage: UIImage) {
+        guard
+            let topText = topTextField.text,
+            let bottomText = bottomTextField.text,
+            let image = selectedImage
+            else {
+            return
+        }
+
+        let meme = Meme(
+            topText: topText,
+            bottomText: bottomText,
+            originalImage: image,
+            memedImage: memedImage
+        )
+        
+        self.memes.append(meme)
+    }
     
 }
 
+//MARK: UIImagePickerControllerDelegate
+
+extension ViewController: UINavigationControllerDelegate, UIImagePickerControllerDelegate {
+
+    func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [String : Any]) {
+        let image = info[UIImagePickerControllerOriginalImage] as? UIImage
+        self.selectedImage = image
+        self.configureUI()
+        self.dismiss(animated: true, completion: nil)
+    }
+
+}
+
+//MARK: UITextFieldDelegate
+
+extension ViewController: UITextFieldDelegate {
+
+    func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
+        self.configureUI()
+        return true
+    }
+
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+        textField.resignFirstResponder()
+        return true
+    }
+}
