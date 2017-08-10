@@ -20,6 +20,8 @@ extension UIImagePickerController {
 
 class ViewController: UIViewController {
     
+    let appDelegate = (UIApplication.shared.delegate as! AppDelegate)
+
     @IBOutlet weak var imageView: UIImageView!
     @IBOutlet weak var shareButton: UIBarButtonItem!
     @IBOutlet weak var cameraButton: UIBarButtonItem!
@@ -116,6 +118,7 @@ class ViewController: UIViewController {
         self.selectedImage = nil
         self.view.endEditing(false)
         self.configureUI()
+        self.dismiss(animated: true, completion: nil)
     }
     
     @IBAction func openCamera(_ sender: Any) {
@@ -206,7 +209,9 @@ class ViewController: UIViewController {
             memedImage: memedImage
         )
         
-        self.memes.append(meme)
+        appDelegate.memes.append(meme)
+        self.dismiss(animated: true, completion: nil)
+
     }
     
 }
