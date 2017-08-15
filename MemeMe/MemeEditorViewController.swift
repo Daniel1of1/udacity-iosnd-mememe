@@ -18,7 +18,7 @@ extension UIImagePickerController {
     }
 }
 
-class ViewController: UIViewController {
+class MemeEditorViewController: UIViewController {
     
     let appDelegate = (UIApplication.shared.delegate as! AppDelegate)
 

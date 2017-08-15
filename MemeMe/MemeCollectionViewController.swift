@@ -13,14 +13,21 @@ private let reuseIdentifier = "MemeCell"
 class MemeCollectionViewController: UICollectionViewController, UICollectionViewDelegateFlowLayout {
     
     let appDelegate = (UIApplication.shared.delegate as! AppDelegate)
-
-    override func viewDidLoad() {
-        super.viewDidLoad()
-    }
     
+    //MARK: UIViewController
+
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         collectionView?.reloadData()
+    }
+    
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        if segue.identifier == "displayMeme" {
+            let destination = segue.destination as! MemeDisplayViewController
+            let index = collectionView!.indexPath(for:(sender as! UICollectionViewCell))!.row
+            let meme = appDelegate.memes[index]
+            destination.meme = meme
+        }
     }
 
     // MARK: UICollectionViewDataSource
@@ -41,21 +48,12 @@ class MemeCollectionViewController: UICollectionViewController, UICollectionView
         return cell
     }
     
+    // MARK: UICollectionViewDelegate
+    
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         let length = min(collectionView.frame.width, collectionView.frame.height)/3 - 8
         return CGSize(width: length, height: length)
     }
 
-    // MARK: UICollectionViewDelegate
-
-
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        if segue.identifier == "displayMeme" {
-            let destination = segue.destination as! MemeDisplayViewController
-            let index = collectionView!.indexPath(for:(sender as! UICollectionViewCell))!.row
-            let meme = appDelegate.memes[index]
-            destination.meme = meme
-        }
-    }
 
 }

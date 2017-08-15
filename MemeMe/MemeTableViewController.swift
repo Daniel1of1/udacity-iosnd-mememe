@@ -12,6 +12,8 @@ class MemeTableViewController: UITableViewController {
 
     let appDelegate = (UIApplication.shared.delegate as! AppDelegate)
     
+    //MARK: UIViewController
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         tableView.rowHeight = UITableViewAutomaticDimension
@@ -22,8 +24,17 @@ class MemeTableViewController: UITableViewController {
         super.viewWillAppear(animated)
         tableView.reloadData()
     }
+    
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        if segue.identifier == "displayMeme" {
+            let destination = segue.destination as! MemeDisplayViewController
+            let index = tableView.indexPath(for:(sender as! UITableViewCell))!.row
+            let meme = appDelegate.memes[index]
+            destination.meme = meme
+        }
+    }
 
-    // MARK: - Table view data source
+    // MARK: - UITableViewDataSource
 
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return appDelegate.memes.count
@@ -42,14 +53,7 @@ class MemeTableViewController: UITableViewController {
     
     }
     
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        if segue.identifier == "displayMeme" {
-            let destination = segue.destination as! MemeDisplayViewController
-            let index = tableView.indexPath(for:(sender as! UITableViewCell))!.row
-            let meme = appDelegate.memes[index]
-            destination.meme = meme
-        }
-    }
+    //MARK: UITableViewDelegate
     
     override func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCellEditingStyle, forRowAt indexPath: IndexPath) {
         if editingStyle == .delete {
