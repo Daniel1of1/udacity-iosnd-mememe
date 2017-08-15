@@ -12,6 +12,12 @@ class MemeTableViewController: UITableViewController {
 
     let appDelegate = (UIApplication.shared.delegate as! AppDelegate)
     
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        tableView.rowHeight = UITableViewAutomaticDimension
+        tableView.estimatedRowHeight = 120
+    }
+    
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         tableView.reloadData()
@@ -25,11 +31,24 @@ class MemeTableViewController: UITableViewController {
 
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "MemeCell", for: indexPath)
+        let cell = tableView.dequeueReusableCell(withIdentifier: "MemeCell", for: indexPath) as! MemeTableViewCell
         let meme = appDelegate.memes[indexPath.row]
-        cell.textLabel?.text = meme.topText + meme.bottomText
-        cell.imageView?.image = meme.memedImage
+        cell.memeLabel.text = meme.topText + meme.bottomText
+        cell.memeImageView.image = meme.originalImage
+        cell.topLabel.attributedText = NSAttributedString(string: meme.topText, attributes: MemeTextAttributes.smallAttritubes)
+        cell.bottomLabel.attributedText = NSAttributedString(string: meme.bottomText, attributes: MemeTextAttributes.smallAttritubes)
+        
         return cell
+    
     }
-
+    
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        if segue.identifier == "displayMeme" {
+            let destination = segue.destination as! MemeDisplayViewController
+            let index = tableView.indexPath(for:(sender as! UITableViewCell))!.row
+            let meme = appDelegate.memes[index]
+            destination.meme = meme
+        }
+    }
+    
 }

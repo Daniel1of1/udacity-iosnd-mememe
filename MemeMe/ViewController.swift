@@ -72,17 +72,8 @@ class ViewController: UIViewController {
     }
 
     func setup(textField: UITextField, text: String) {
-        let style = NSMutableParagraphStyle()
-        style.alignment = .center
 
-        let memeTextAttributes:[String:Any] = [
-            NSParagraphStyleAttributeName: style,
-            NSForegroundColorAttributeName: UIColor.white,
-            NSStrokeColorAttributeName: UIColor.black,
-            NSFontAttributeName: UIFont(name: "HelveticaNeue-CondensedBlack", size: 40)!,
-            NSStrokeWidthAttributeName: -4]
-
-        textField.defaultTextAttributes = memeTextAttributes
+        textField.defaultTextAttributes = MemeTextAttributes.defaultAttritubes
         textField.text = text
 
     }
