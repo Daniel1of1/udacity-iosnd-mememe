@@ -209,7 +209,7 @@ class MemeEditorViewController: UIViewController {
 
 //MARK: UIImagePickerControllerDelegate
 
-extension ViewController: UINavigationControllerDelegate, UIImagePickerControllerDelegate {
+extension MemeEditorViewController: UINavigationControllerDelegate, UIImagePickerControllerDelegate {
 
     func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [String : Any]) {
         let image = info[UIImagePickerControllerOriginalImage] as? UIImage
@@ -222,7 +222,7 @@ extension ViewController: UINavigationControllerDelegate, UIImagePickerControlle
 
 //MARK: UITextFieldDelegate
 
-extension ViewController: UITextFieldDelegate {
+extension MemeEditorViewController: UITextFieldDelegate {
 
     func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
         self.configureUI()
