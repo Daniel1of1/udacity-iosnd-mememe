@@ -78,14 +78,9 @@ class MemeEditorViewController: UIViewController {
 
     }
     
-    func cancelButtonEnabled() -> Bool {
-        return (imageView.image != nil)
-    }
-    
     func configureUI() {
         self.imageView.image = selectedImage
         cameraButton.isEnabled = UIImagePickerController.isSourceTypeAvailable(.camera)
-        cancelButton.isEnabled = self.cancelButtonEnabled()
         shareButton.isEnabled = (imageView.image != nil)
     }
     
